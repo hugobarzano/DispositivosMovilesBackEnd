@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load qr %}
+{% block title %}Index{% endblock %}
+
+
+{% block body_block %}
+
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">Session</h3>
+  </div>
+
+      {% if qr %}
+          {{ qr|qrcode:"qr_data" }}
+          <form id="sesion_form" method="post" action="/sesion/"  enctype="multipart/form-data">
+            {% csrf_token %}
+            {% load bootstrap %}
+            {{ form.session_tag|bootstrap }}
+              <input type="submit" name="submit" value="Generar"  />
+          </form>
+      {% else %}
+            <form id="sesion_form" method="post" action="/sesion/"  enctype="multipart/form-data">
+              {% csrf_token %}
+              {% load bootstrap %}
+              {{ form.session_tag|bootstrap }}
+                <input type="submit" name="submit" value="Generar"  />
+            </form>
+      {% endif %}
+    </div>
+
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Clase</h3>
+        </div>
+
+        {% if clase %}
+            {% for i in clase %}
+                <h5><strong>Nombre:</strong> {{i.NOMBRE}} <strong>DNI:</strong> {{i.DNI}} <strong>Asistencia:</strong> {{i.assitencia}} </h5>
+                <hr>
+            {% endfor %}
+          {% else %}
+               <strong>No hay Alumnos.</strong>
+          {% endif %}
+
+      </div>
+
+
+
+
+{% endblock %}
