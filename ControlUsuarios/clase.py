@@ -15,12 +15,13 @@ class ClaseDriver(object):
 
     def __init__(self):
 
-        self.client = MongoClient(host='localhost', port=27017)
-        self.database = self.client['clase']
-        self.database = self.client['sesion']
+        self.client = MongoClient('mongodb://hugobarzano:hugobarzano@ds017173.mlab.com:17173/dispositivosmoviles')
+        self.database=self.client.get_default_database()
+        self.database['clase']
+        self.database['sesion']
 
     def createSesion(self, clave_sesion):
-        #self.database.sesion.remove()
+        self.database.sesion.remove()
         sesion={"clave_sesion":clave_sesion,"fecha_sesion":datetime.now().strftime('%Y-%m-%d')}
         self.database.sesion.insert(sesion)
 
