@@ -26,7 +26,19 @@ gestorClase=ClaseDriver()
 
 @csrf_exempt
 def index(request):
-        return render(request, 'registration/login.html',{})
+    if request.method == 'GET':
+        session_num=gestorClase.database.sesion.find({}).count()
+        session_tag="default"
+        if session_num>0:
+            session_tag=gestorClase.database.sesion.find({})
+            lista=[]
+            for i in session_tag:
+                print i
+                lista.append(i)
+            print lista[0]["clave_sesion"]
+        return render(request, 'ControlUsuarios/session_android.html',{"qr":lista[0]["clave_sesion"],"fecha":lista[0]["fecha_sesion"]})
+
+        #return render(request, 'registration/login.html',{})
 @csrf_exempt
 def sesion(request):
         clase=gestorClase.database.clase.find()
@@ -42,9 +54,17 @@ def sesion(request):
                  return render(request, 'ControlUsuarios/sessions.html',{'form': form,"qr":session_tag,"clase":clase} )
 
         else:
-            session_tag=gestorClase.database.sesion.find({"fecha_sesion":datetime.now().strftime('%Y-%m-%d')})
+            session_num=gestorClase.database.sesion.find({}).count()
+            session_tag="default"
+            if session_num>0:
+                session_tag=gestorClase.database.sesion.find({})
+                lista=[]
+                for i in session_tag:
+                    print i
+                    lista.append(i)
+                print lista[0]["clave_sesion"]
             form=SessionForm()
-            return render(request, 'ControlUsuarios/sessions.html',{'form': form,"clase":clase} )
+            return render(request, 'ControlUsuarios/sessions.html',{'form': form,"qr":lista[0]["clave_sesion"],"clase":clase} )
 
 
 
@@ -72,6 +92,87 @@ class Preferencias(View):
             return render(request, 'noinventory/Preferencias.html', {'form': form})
 
 @csrf_exempt
+def borrarTodo(request):
+    if request.method == 'GET':
+        gestorClase.database.clase.remove()
+        cl={"Alumnos": [{"NOMBRE": "Hugo Barzano Cruz","DNI": "77138361"}, {"NOMBRE": "Mariano Palomo Villafranca","DNI": "66666666z"}]}
+        for i in cl["Alumnos"]:
+            i["assitencia"]="False"
+            print i
+            gestorClase.database.clase.insert(i)
+        aux3=[]
+        respuesta={}
+        lista_alumnos=gestorClase.database.clase.find({})
+        for a in lista_alumnos:
+            print a["NOMBRE"]
+            aux4={"NOMBRE":a["NOMBRE"],"DNI":a["DNI"],"assitencia":a["assitencia"]}
+            aux3.append(aux4)
+        respuesta={"alumnos":aux3}
+        return JsonResponse(respuesta,safe=False)
+
+
+    else:
+        gestorClase.database.clase.remove()
+        gestorClase.database.sesion.remove()
+        default={"NOMBRE":"Nombre","DNI":"Dni","assitencia":"asistencia"}
+        aux7=[]
+        aux7.append(default)
+        respuesta={"alumnos":aux7}
+        return JsonResponse(respuesta,safe=False)
+
+@csrf_exempt
+def inicializarClase(request):
+    if request.method == 'GET':
+        gestorClase.database.clase.remove()
+        cl={"Alumnos": [{"NOMBRE": "Hugo Barzano Cruz","DNI": "77138361"}, {"NOMBRE": "Mariano Palomo Villafranca","DNI": "66666666z"}]}
+        for i in cl["Alumnos"]:
+            i["assitencia"]="False"
+            print i
+            gestorClase.database.clase.insert(i)
+        aux3=[]
+        respuesta={}
+        lista_alumnos=gestorClase.database.clase.find({})
+        for a in lista_alumnos:
+            print a["NOMBRE"]
+            aux4={"NOMBRE":a["NOMBRE"],"DNI":a["DNI"],"assitencia":a["assitencia"]}
+            aux3.append(aux4)
+        respuesta={"alumnos":aux3}
+        return JsonResponse(respuesta,safe=False)
+    else:
+        gestorClase.database.clase.remove()
+        cl={"Alumnos": [{"NOMBRE": "Hugo Barzano Cruz","DNI": "77138361"}, {"NOMBRE": "Mariano Palomo Villafranca","DNI": "66666666z"}]}
+        for i in cl["Alumnos"]:
+            i["assitencia"]="False"
+            print i
+            gestorClase.database.clase.insert(i)
+        aux3=[]
+        respuesta={}
+        lista_alumnos=gestorClase.database.clase.find({})
+        for a in lista_alumnos:
+            print a["NOMBRE"]
+            aux4={"NOMBRE":a["NOMBRE"],"DNI":a["DNI"],"assitencia":a["assitencia"]}
+            aux3.append(aux4)
+        print respuesta
+        respuesta={"alumnos":aux3}
+
+        #return JsonResponse(respuesta,safe=False)
+        return JsonResponse(respuesta,safe=False)
+
+
+
+@csrf_exempt
+def setClaveAndroid(request):
+    if request.method == 'POST':
+        mydic=dict(request.POST)
+        print mydic["clave"][0]
+        if mydic["clave"][0] == "":
+            gestorClase.createSesion("default")
+        else:
+            gestorClase.createSesion(mydic["clave"][0])
+
+        return HttpResponse("Ok")
+
+@csrf_exempt
 def alumnosJson(request):
     if request.method == 'GET':
         default={"NOMBRE":"Nombre","DNI":"Dni","assitencia":"asistencia"}
@@ -80,15 +181,18 @@ def alumnosJson(request):
         respuesta={"alumnos":aux7}
         aux=[]
         aux3=[]
-        print "entrado por post"
-        lista_alumnos=gestorClase.database.clase.find({})
-        for a in lista_alumnos:
-            print a["NOMBRE"]
-            aux4={"NOMBRE":a["NOMBRE"],"DNI":a["DNI"],"assitencia":a["assitencia"]}
-            aux3.append(aux4)
-        print respuesta
-        respuesta={"alumnos":aux3}
-        return JsonResponse(respuesta,safe=False)
+        numero_alumnos=gestorClase.database.clase.find({}).count()
+        if numero_alumnos>0:
+            lista_alumnos=gestorClase.database.clase.find({})
+            for a in lista_alumnos:
+                print a["NOMBRE"]
+                aux4={"NOMBRE":a["NOMBRE"],"DNI":a["DNI"],"assitencia":a["assitencia"]}
+                aux3.append(aux4)
+            print respuesta
+            respuesta={"alumnos":aux3}
+            return JsonResponse(respuesta,safe=False)
+        else:
+            return JsonResponse(respuesta,safe=False)
     else:
         default={"NOMBRE":"Nombre","DNI":"Dni","assitencia":"asistencia"}
         aux7=[]
@@ -97,15 +201,18 @@ def alumnosJson(request):
         aux=[]
         aux3=[]
         print "entrado por post"
-        lista_alumnos=gestorClase.database.clase.find({})
-        for a in lista_alumnos:
-            print a["NOMBRE"]
-            aux4={"NOMBRE":a["NOMBRE"],"DNI":a["DNI"],"assitencia":a["assitencia"]}
-            aux3.append(aux4)
-        print respuesta
-        respuesta={"alumnos":aux3}
-        return JsonResponse(respuesta,safe=False)
-
+        numero_alumnos=gestorClase.database.clase.find({}).count()
+        if numero_alumnos>0:
+            lista_alumnos=gestorClase.database.clase.find({})
+            for a in lista_alumnos:
+                print a["NOMBRE"]
+                aux4={"NOMBRE":a["NOMBRE"],"DNI":a["DNI"],"assitencia":a["assitencia"]}
+                aux3.append(aux4)
+            print respuesta
+            respuesta={"alumnos":aux3}
+            return JsonResponse(respuesta,safe=False)
+        else:
+            return JsonResponse(respuesta,safe=False)
 
 
 @csrf_exempt
