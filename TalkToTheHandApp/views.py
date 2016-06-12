@@ -41,6 +41,16 @@ def salaCreator(request):
 
 
 @csrf_exempt
+def sala(request,id_sala):
+    sala_object=Item()
+    cursor=gestorSala.database.salas.find({"_id":id_sala})
+    for i in cursor:
+        sala_object = Sala.build_from_json(i)
+
+    return render(request, 'noinventory/item.html',{"sala":sala_object})
+
+
+@csrf_exempt
 def salasJson(request):
     if request.method == 'GET':
         default={"_id":"ID","nombre":"Nombre","descripcion":"Descripcion","fecha":"Fecha"}
