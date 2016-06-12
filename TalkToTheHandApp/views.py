@@ -47,7 +47,41 @@ def sala(request,id_sala):
     for i in cursor:
         sala_object = Sala.build_from_json(i)
 
-    return render(request, 'TalkToTheHandApp/sala.html',{"sala_object":sala_object})
+    return render(request, 'TalkToTheHandApp/sala.html',{"sala_object":sala_object,"id":str(sala_object._id)})
+
+@csrf_exempt
+def enviar(request):
+    if request.method=='GET':
+        mydic=dict(request.GET)
+        print mydic["sala"][0]
+
+        mensaje= mydic["username"][0]+" -- "+datetime.now().strftime('%Y-%m-%d %H:%M:%S')+": \n"+ mydic["mensaje"][0]
+        print mensaje
+        gestorSala.database.salas.update({"_id":ObjectId(mydic["sala"][0])},{"$addToSet": {"datos_sala" : str(mensaje),}})
+        return HttpResponse("OK")
+    else:
+        mydic=dict(request.POST)
+        mensaje= mydic["username"][0]+" -- "+datetime.now().strftime('%Y-%m-%d %H:%M:%S')+": \n"+ mydic["mensaje"][0]
+        gestorSala.database.salas.update({"_id":ObjectId(mydic["sala"][0])},{"$addToSet": {"datos_sala" : str(mensaje),}})
+        return HttpResponse("OK")
+
+def updateSala(request):
+    if request.method=='GET':
+        mydic=dict(request.GET)
+        print mydic
+        print mydic["id_sala"][0]
+        cursor = gestorSala.database.salas.find({"_id":ObjectId(mydic["id_sala"][0])})
+        response='<div class="actualizame">'
+        for i in cursor:
+            objeto=Sala.build_from_json(i)
+
+        for j in objeto.datos_sala:
+            response=response+'<h5><strong>#</strong>'+str(j)+'</h5><hr></div>'
+
+        return HttpResponse(response)
+
+
+
 
 
 @csrf_exempt

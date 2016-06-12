@@ -4,22 +4,52 @@
 
 
 
-      <div class="panel panel-primary">
+      <div class="panel panel-primary" id="conversaciones" data-conversaciones="{{ id }}" >
         <div class="panel-heading">
           <h3 class="panel-title"> {{ sala_object.nombre_sala }}</h3>
           {{sala_object.descripcion_sala}}
         </div>
 
+        <div class="actualizame">
         {% if sala_object.datos_sala %}
             {% for i in sala_object.datos_sala %}
-                <h5><strong>Nombre:</strong> {{i}} <strong></h5>
+                <h5><strong>#</strong> {{i}} </h5>
                 <hr>
             {% endfor %}
           {% else %}
                <strong>No hay salas</strong>
           {% endif %}
+        </div>
 
       </div>
+
+
+ <script>
+      function actualiza() {
+        console.log("actualizacion")
+        console.log($("#conversaciones").attr("data-conversaciones"));
+
+         $.ajax({
+           url: "/TalkToTheHand/updateSala/",
+           type: "get", //send it through get method
+           data:{id_sala:$("#conversaciones").attr("data-conversaciones")},
+           cache: false,
+           success: function(response) {
+             console.log(response)
+               $('.actualizame').html(response)
+           },
+           error: function(xhr) {
+           }
+       });
+       }
+
+ $(document).ready(function(){
+       setInterval(actualiza, 1000);
+ });
+
+
+
+ </script>
 
 
 
