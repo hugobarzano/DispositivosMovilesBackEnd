@@ -1,0 +1,27 @@
+{% extends "base2.html" %}
+{% block title %}Index{% endblock %}
+{% block body_block %}
+
+
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title"> {{ sala_object.nombre_sala }}</h3>
+          {{sala_object.descripcion_sala}}
+        </div>
+
+        {% if sala_object.datos_sala %}
+            {% for i in sala_object.datos_sala %}
+                <h5><strong>Nombre:</strong> {{i}} <strong></h5>
+                <hr>
+            {% endfor %}
+          {% else %}
+               <strong>No hay salas</strong>
+          {% endif %}
+
+      </div>
+
+
+
+
+{% endblock %}

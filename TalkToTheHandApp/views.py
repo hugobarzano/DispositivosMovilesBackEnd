@@ -42,12 +42,12 @@ def salaCreator(request):
 
 @csrf_exempt
 def sala(request,id_sala):
-    sala_object=Item()
-    cursor=gestorSala.database.salas.find({"_id":id_sala})
+    sala_object=Sala()
+    cursor=gestorSala.database.salas.find({"_id":ObjectId(id_sala)})
     for i in cursor:
         sala_object = Sala.build_from_json(i)
 
-    return render(request, 'noinventory/item.html',{"sala":sala_object})
+    return render(request, 'TalkToTheHandApp/sala.html',{"sala_object":sala_object})
 
 
 @csrf_exempt
