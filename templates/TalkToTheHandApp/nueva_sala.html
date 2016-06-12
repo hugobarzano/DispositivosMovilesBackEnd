@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Nueva Sala de Chat{% endblock %}
+
+
+{% block body_block %}
+
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">Nueva Sala de Chat</h3>
+  </div>
+
+
+            <form id="sala_form" method="post" action="/TalkToTheHand/nuevaSala"  enctype="multipart/form-data">
+              {% csrf_token %}
+              {% load bootstrap %}
+              {{ form.nombre|bootstrap }}
+              {{ form.descripcion|bootstrap }}
+                <input type="submit" name="submit" value="Generar"  />
+            </form>
+
+    </div>
+
+
+
+
+{% endblock %}
