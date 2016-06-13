@@ -3,7 +3,7 @@
 {% block body_block %}
 
 
-
+    <body>
       <div class="panel panel-primary" id="conversaciones" data-conversaciones="{{ id }}" >
         <div class="panel-heading">
           <h3 class="panel-title"> {{ sala_object.nombre_sala }}</h3>
@@ -22,9 +22,15 @@
         </div>
 
       </div>
+    </body>
 
 
  <script>
+ $(window).ready(function(){
+
+    $("body").animate({ scrollTop: $(document).height()}, 1000);
+
+});
       function actualiza() {
         console.log("actualizacion")
         console.log($("#conversaciones").attr("data-conversaciones"));
