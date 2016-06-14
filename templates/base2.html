@@ -18,24 +18,19 @@
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
-  <!--Aleertas para registros-->
-  <script>
-    function alerta(){ alert('Registro completo');}
-  </script>
-
 
 
 
   </head>
 
-  <body>
+  <body style="padding-top: 0px ">
 
             <!--barra lateral izquida-->
 
                 {% block lateral_izquierda %}{% endblock %}
 
         </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="col-sm-12 col-md-15 main">
            <div>
                 {% block body_block %}{% endblock %}
            </div>
