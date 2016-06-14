@@ -55,8 +55,18 @@ def salaCreatorAndroid(request):
         gestorSala.createSala(sala)
         return HttpResponse("OK")
     else:
-        return HttpResponse("OK")
+        mydic=dict(request.GET)
+        print mydic["username"][0]
+        print mydic["nombre"][0]
+        print mydic["descripcion"][0]
 
+        sala = Sala.build_from_json({"nombre_sala":mydic["nombre"][0],
+            "fecha_sala": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "descripcion_sala": mydic["descripcion"][0],
+            "usuario": mydic["username"][0],
+            "datos_sala":[]})
+        gestorSala.createSala(sala)
+        return HttpResponse("OK")
 @csrf_exempt
 def sala(request,id_sala):
     sala_object=Sala()
