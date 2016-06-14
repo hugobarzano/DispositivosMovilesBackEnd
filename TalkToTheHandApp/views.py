@@ -103,7 +103,7 @@ def updateSala(request):
             objeto=Sala.build_from_json(i)
 
         for j in objeto.datos_sala:
-            response=response+'<h5><strong>#</strong>'+str(j)+'</h5><hr></div>'
+            response=response+'<h5><strong>#</strong><p style="overflow-wrap:break-word;">'+str(j)+'</p></h5><hr></div>'
 
         return HttpResponse(response)
 
